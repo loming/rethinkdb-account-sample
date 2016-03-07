@@ -4,7 +4,7 @@ from rethinkpool import *
 from rethinkdb.errors import RqlRuntimeError
 from singleton import Singleton
 import traceback
-import time
+import time, datetime
 
 # Setup the configuration
 dbConfig = ConfigParser.ConfigParser()
@@ -55,7 +55,9 @@ def dbwrapper(action, benchmark=True):
         def func_wrapper(*args,**kwargs):
             start = time.time()
             if benchmark:
-                logger.info('[i] started @ {0}, {1}'.format(start, action))
+                logger.info('[i] started @ {0}, {1}'.format(
+                    datetime.datetime.fromtimestamp(start).strftime('%Y-%m-%d %H:%M:%S'),
+                    action))
 
             with Database().onConnection() as res:
                 try:
@@ -72,20 +74,4 @@ def dbwrapper(action, benchmark=True):
         return func_wrapper
 
     return func_decorator
-
-# def pool(ctor, limit=10):
-#     local_pool = multiprocessing.Queue()
-#     n = multiprocessing.Value('i', 0)
-#     @contextlib.contextmanager
-#     def pooled(ctor=ctor, lpool=local_pool, n=n):
-#         # block iff at limit
-#         try: i = lpool.get(limit and n.value >= limit)
-#         except multiprocessing.queues.Empty:
-#             n.value += 1
-#             i = ctor()
-#
-#             logger.debug("Pooled object: %s", i.id)
-#         yield i
-#         lpool.put(i)
-#     return pooled
 
