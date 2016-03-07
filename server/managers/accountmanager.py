@@ -76,15 +76,15 @@ class AccountManager(Singleton):
                 new_data['id'] = result['generated_keys'][0]
                 return new_data
             else:
-                logger.error('[addNewAccount][insert_failed]: {0}'.format(result))
+                logger.error('[add new account][insert_failed]: {0}'.format(result))
                 return None
 
     @staticmethod
     def update_account(new_data):
         # if user didn't change password
-        if new_data.has_key('password') and new_data['password'] == '':
+        if 'password' in new_data and new_data['password'] == '':
             new_data.pop('password')
-        else:
+        elif 'password' in new_data:
             new_data['salt'], new_data['password'] = AccountManager._salt_and_hash_password(new_data['password'])
 
         return AccountManager._update(new_data)
@@ -114,13 +114,14 @@ class AccountManager(Singleton):
     ##
     @staticmethod
     @dbwrapper(action='update password')
-    def update_password(email, new_password):
+    def update_password(email, new_password, conn=None):
         salt, hashed_password = AccountManager._salt_and_hash_password(new_password)
+
         result = r.table('accounts')\
             .filter({email: email})\
             .limit(1)\
             .update({'salt':salt, 'password': hashed_password})\
-            .run(res.conn)
+            .run(conn)
 
         if result['replaced'] == 1:
             return True
@@ -153,7 +154,10 @@ class AccountManager(Singleton):
     @dbwrapper(action='get account by email')
     def get_account_by_email(email, conn=None):
 
-        cursor = r.table('accounts').filter({'email': email}).limit(1).run(conn)
+        cursor = r.table('accounts')\
+            .filter({'email': email})\
+            .limit(1)\
+            .run(conn)
 
         if len(cursor.items):
             doc = cursor.next()
@@ -174,7 +178,11 @@ class AccountManager(Singleton):
     @staticmethod
     @dbwrapper(action='validate reset code')
     def validate_reset_code(email, reset_code, conn=None):
-        cursor = r.table('account_reset_codes').filter({'email': email, 'reset_code': reset_code}).limit(1).run(conn)
+        cursor = r.table('account_reset_codes')\
+            .filter({'email': email, 'reset_code': reset_code})\
+            .limit(1)\
+            .run(conn)
+
         if len(cursor.items):
             logger.info("[validate reset code][success]: {0}".format(email))
             return 'ok'
@@ -188,7 +196,9 @@ class AccountManager(Singleton):
     @staticmethod
     @dbwrapper(action='get all accounts')
     def get_all_accounts(conn=None):
-        cursor = r.table('accounts').run(conn)
+        cursor = r.table('accounts')\
+            .run(conn)
+
         return list(cursor)
 
     ##
@@ -199,7 +209,11 @@ class AccountManager(Singleton):
     @staticmethod
     @dbwrapper(action='delete account')
     def delete_account(acc_id, conn=None):
-        result = r.table('accounts').get(acc_id).deete().run(conn)
+        result = r.table('accounts')\
+            .get(acc_id)\
+            .delete()\
+            .run(conn)
+
         if result['deleted'] == 1:
             return True
         else:
