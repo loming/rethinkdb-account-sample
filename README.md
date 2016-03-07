@@ -11,21 +11,22 @@ A sample account system using:-
 
 # Python Server
 
-Libraries:-
+# Libraries:-
 
 
 * [rethinkdbpool] - A database connection pool for RethinkDB in Python
 * [tzlocal] - A library to get local timezone as tzinfo object
 
 
-Install dependencies:-
+# Install dependencies:-
 
 
 sudo pip install rethinkdb rethinkdbpool tzlocal
 
 
 
-# TODO:
+
+## TODO:
 All of the above :o)
 
 
