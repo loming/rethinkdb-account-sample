@@ -1,4 +1,4 @@
-## rethinkdb-account-sample
+# rethinkdb-account-sample
 
 
 A sample account system using:-
@@ -9,16 +9,16 @@ A sample account system using:-
 - And Angularjs as Web frontend.
 
 
-# Python Server
+## Python Server
 
-# Libraries:-
+### Libraries:-
 
 
 * [rethinkdbpool] - A database connection pool for RethinkDB in Python
 * [tzlocal] - A library to get local timezone as tzinfo object
 
 
-# Install dependencies:-
+### Install dependencies:-
 
 
 sudo pip install rethinkdb rethinkdbpool tzlocal
