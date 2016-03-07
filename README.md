@@ -1,4 +1,4 @@
-# rethinkdb-account-sample
+## rethinkdb-account-sample
 
 
 A sample account system using:-
@@ -16,6 +16,12 @@ Libraries:-
 
 * [rethinkdbpool] - A database connection pool for RethinkDB in Python
 * [tzlocal] - A library to get local timezone as tzinfo object
+
+
+Install dependencies:-
+
+
+sudo pip install rethinkdb rethinkdbpool tzlocal
 
 
 
